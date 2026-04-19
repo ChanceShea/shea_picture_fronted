@@ -34,6 +34,12 @@ const router = createRouter({
       component: () => import('@/views/admin/PictureManageView.vue'),
     },
     {
+      path: '/picture/:id',
+      name: '图片详情',
+      component: () => import('@/views/picture/PictureDetailView.vue'),
+      props: true,
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('@/views/AboutView.vue'),
