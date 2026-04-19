@@ -66,6 +66,16 @@ const originItems = ref<MenuProps['items']>([
     title: '用户管理',
   },
   {
+    key: '/picture/add_picture',
+    label: '上传图片',
+    title: '上传图片',
+  },
+  {
+    key: '/picture/pictureManage',
+    label: '图片管理',
+    title: '图片管理',
+  },
+  {
     key: 'others',
     label: h('a', { href: 'https://www.codefather.cn', target: '_blank' }, '编程导航'),
     title: '编程导航',

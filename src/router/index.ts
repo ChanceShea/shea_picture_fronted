@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// @ts-ignore
-// @ts-ignore
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -24,6 +22,16 @@ const router = createRouter({
       path: '/admin/userManage',
       name: '用户管理',
       component: () => import('@/views/admin/UserManageView.vue'),
+    },
+    {
+      path: '/picture/add_picture',
+      name: '添加图片',
+      component: () => import('@/views/picture/AddPictureView.vue'),
+    },
+    {
+      path: '/picture/pictureManage',
+      name: '图片管理',
+      component: () => import('@/views/admin/PictureManageView.vue'),
     },
     {
       path: '/about',
