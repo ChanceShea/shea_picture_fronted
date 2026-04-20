@@ -1,5 +1,15 @@
 <template>
   <div id="pictureManageView">
+    <a-flex justify="space-between">
+      <h2>图片管理</h2>
+      <a-space>
+        <a-button type="primary" href="/add_picture" target="_blank">创建图片</a-button>
+        <a-button type="primary" href="/add_picture/batch" target="_blank" ghost
+          >批量创建图片</a-button
+        >
+      </a-space>
+    </a-flex>
+    <div style="margin-bottom: 16px" />
     <!--搜索表单-->
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
       <a-form-item label="关键词">
@@ -194,7 +204,8 @@ const fetchData = async () => {
   if (res.data.code === 200 && res.data.data) {
     console.log(res.data.data)
     dataList.value = res.data.data.records ?? []
-    total.value = res.data.data.total ?? 0
+    total.value = Number(res.data.data.total) ?? 0
+    console.log('total:', res.data.data.total)
   } else {
     message.error('获取数据失败,' + res.data.message)
   }

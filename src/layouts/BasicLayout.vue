@@ -6,6 +6,7 @@
         <!--router-view会自动根据路由匹配对应的组件-->
         <router-view />
       </a-layout-content>
+      <div style="margin-bottom: 40px" />
       <a-layout-footer class="footer">
         <a href="https://www.codefather.cn" target="_blank"> 编程导航 by Shea </a>
       </a-layout-footer>

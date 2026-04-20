@@ -73,7 +73,7 @@ const loading = ref(true)
 
 const searchParams = reactive<API.PictureQueryDTO>({
   current: 1,
-  pageSize: 12,
+  pageSize: 15,
   sortField: 'createTime',
   sortOrder: 'descend',
 })
