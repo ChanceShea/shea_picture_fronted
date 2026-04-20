@@ -127,6 +127,18 @@ declare namespace API {
     tags?: string[]
   }
 
+  type PictureUploadBatchDTO = {
+    count?: number
+    namePrefix?: string
+    searchText?: string
+  }
+
+  type PictureUploadDTO = {
+    id?: number
+    picName?: string
+    url?: string
+  }
+
   type PictureVO = {
     category?: string
     createTime?: string
@@ -149,6 +161,12 @@ declare namespace API {
   type ResultBoolean_ = {
     code?: number
     data?: boolean
+    message?: string
+  }
+
+  type ResultInt_ = {
+    code?: number
+    data?: number
     message?: string
   }
 
@@ -214,6 +232,8 @@ declare namespace API {
 
   type uploadPictureUsingPOSTParams = {
     id?: number
+    picName?: string
+    url?: string
   }
 
   type User = {

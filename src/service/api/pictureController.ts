@@ -5,7 +5,7 @@ import request from '@/request'
 /** removePictureById DELETE /api/picture/delete */
 export async function removePictureByIdUsingDelete(
   body: API.DeleteRequest,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.ResultBoolean_>('/api/picture/delete', {
     method: 'DELETE',
@@ -20,7 +20,7 @@ export async function removePictureByIdUsingDelete(
 /** editPicture POST /api/picture/edit */
 export async function editPictureUsingPost(
   body: API.PictureEditDTO,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.ResultBoolean_>('/api/picture/edit', {
     method: 'POST',
@@ -36,7 +36,7 @@ export async function editPictureUsingPost(
 export async function getPictureVoByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.getPictureVOByIdUsingGETParams,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.ResultPictureVO_>('/api/picture/get/vo', {
     method: 'GET',
@@ -50,7 +50,7 @@ export async function getPictureVoByIdUsingGet(
 /** listPictureByPage POST /api/picture/list/page */
 export async function listPictureByPageUsingPost(
   body: API.PictureQueryDTO,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.ResultPagePicture_>('/api/picture/list/page', {
     method: 'POST',
@@ -65,7 +65,7 @@ export async function listPictureByPageUsingPost(
 /** listPictureVOByPage POST /api/picture/list/page/vo */
 export async function listPictureVoByPageUsingPost(
   body: API.PictureQueryDTO,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.ResultPagePictureVO_>('/api/picture/list/page/vo', {
     method: 'POST',
@@ -80,7 +80,7 @@ export async function listPictureVoByPageUsingPost(
 /** reviewPicture POST /api/picture/review */
 export async function reviewPictureUsingPost(
   body: API.PictureReviewDTO,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.ResultBoolean_>('/api/picture/review', {
     method: 'POST',
@@ -103,7 +103,7 @@ export async function listPictureTagCategoryUsingGet(options?: { [key: string]: 
 /** updatePicture PUT /api/picture/update */
 export async function updatePictureUsingPut(
   body: API.PictureUpdateDTO,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.ResultBoolean_>('/api/picture/update', {
     method: 'PUT',
@@ -121,7 +121,7 @@ export async function uploadPictureUsingPost(
   params: API.uploadPictureUsingPOSTParams,
   body: {},
   file?: File,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   const formData = new FormData()
 
@@ -151,7 +151,37 @@ export async function uploadPictureUsingPost(
       ...params,
     },
     data: formData,
-    // requestType: 'form',
+    requestType: 'form',
+    ...(options || {}),
+  })
+}
+
+/** uploadPictureByBatch POST /api/picture/upload/batch */
+export async function uploadPictureByBatchUsingPost(
+  body: API.PictureUploadBatchDTO,
+  options?: { [key: string]: any }
+) {
+  return request<API.ResultInt_>('/api/picture/upload/batch', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** uploadPictureByUrl POST /api/picture/upload/url */
+export async function uploadPictureByUrlUsingPost(
+  body: API.PictureUploadDTO,
+  options?: { [key: string]: any }
+) {
+  return request<API.ResultPictureVO_>('/api/picture/upload/url', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   })
 }
