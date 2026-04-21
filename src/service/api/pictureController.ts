@@ -77,6 +77,21 @@ export async function listPictureVoByPageUsingPost(
   })
 }
 
+/** listPictureVOByPageWithCache POST /api/picture/list/page/vo/cache */
+export async function listPictureVoByPageWithCacheUsingPost(
+  body: API.PictureQueryDTO,
+  options?: { [key: string]: any }
+) {
+  return request<API.ResultPagePictureVO_>('/api/picture/list/page/vo/cache', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** reviewPicture POST /api/picture/review */
 export async function reviewPictureUsingPost(
   body: API.PictureReviewDTO,
