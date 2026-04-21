@@ -24,6 +24,7 @@ import {
 interface Props {
   picture?: API.PictureVO
   onSuccess?: (newPicture: API.PictureVO) => void
+  spaceId?: number
 }
 
 const props = defineProps<Props>()
@@ -34,6 +35,7 @@ const handleUpload = async () => {
   loading.value = true
   try {
     const params: API.PictureUploadDTO = { url: fileUrl.value }
+    params.spaceId = props.spaceId
     if (props.picture) {
       params.id = props.picture.id
     }

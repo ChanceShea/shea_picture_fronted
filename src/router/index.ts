@@ -34,7 +34,7 @@ const router = createRouter({
       component: () => import('@/views/picture/BatchAddPictureView.vue'),
     },
     {
-      path: '/picture/pictureManage',
+      path: '/admin/pictureManage',
       name: '图片管理',
       component: () => import('@/views/admin/PictureManageView.vue'),
     },
@@ -42,6 +42,27 @@ const router = createRouter({
       path: '/picture/:id',
       name: '图片详情',
       component: () => import('@/views/picture/PictureDetailView.vue'),
+      props: true,
+    },
+    {
+      path: '/admin/spaceManage',
+      name: '空间管理',
+      component: () => import('@/views/admin/SpaceManageView.vue'),
+    },
+    {
+      path: '/space/add_space',
+      name: '添加空间',
+      component: () => import('@/views/space/AddSpaceView.vue'),
+    },
+    {
+      path: '/my_space',
+      name: '我的空间',
+      component: () => import('@/views/space/MySpaceView.vue'),
+    },
+    {
+      path: '/space/:id',
+      name: '空间详情',
+      component: () => import('@/views/space/SpaceDetailView.vue'),
       props: true,
     },
     {

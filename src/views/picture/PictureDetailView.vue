@@ -53,7 +53,7 @@
               v-if="canEdit"
               :icon="h(EditOutlined)"
               type="default"
-              :href="`/add_picture/${picture.id}`"
+              :href="`/picture/add_picture/${picture.id}`"
               target="_blank"
               @click="doEdit"
             >
@@ -89,7 +89,7 @@ const picture = ref<API.PictureVO>({})
 
 const fetchPictureDetail = async () => {
   try {
-    const res = await getPictureVoByIdUsingGet({ id: Number(props.id) })
+    const res = await getPictureVoByIdUsingGet({ id: props.id })
     if (res.data.code === 200 && res.data.data) {
       picture.value = res.data.data
     } else {
@@ -114,7 +114,13 @@ const canEdit = computed(() => {
 const router = useRouter()
 
 const doEdit = () => {
-  router.push(`/add_picture/${picture.value.id}`)
+  router.push({
+    path: '/picture/add_picture',
+    query: {
+      id: picture.value.id,
+      spaceId: picture.value.spaceId,
+    },
+  })
 }
 
 const doDelete = async () => {

@@ -11,7 +11,7 @@ router.beforeEach(async (to, from, next) => {
   const loginUserStore = useLoginUserStore()
   let loginUser = loginUserStore.loginUser
   // 确保页面刷新时，首次加载时，能等待后端返回用户信息后再权限校验
-  if (!firstFetchLoginUser) {
+  if (firstFetchLoginUser) {
     await loginUserStore.fetchLoginUser()
     loginUser = loginUserStore.loginUser
     firstFetchLoginUser = false

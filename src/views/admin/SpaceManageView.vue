@@ -1,43 +1,27 @@
 <template>
-  <div id="pictureManageView">
+  <div id="spaceManageView">
     <a-flex justify="space-between">
-      <h2>图片管理</h2>
+      <h2>空间管理</h2>
       <a-space>
-        <a-button type="primary" href="/picture/add_picture" target="_blank">创建图片</a-button>
-        <a-button type="primary" href="/add_picture/batch" target="_blank" ghost
-          >批量创建图片</a-button
-        >
+        <a-button type="primary" href="/space/add_space" target="_blank">创建空间</a-button>
       </a-space>
     </a-flex>
     <div style="margin-bottom: 16px" />
     <!--搜索表单-->
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
       <a-form-item label="关键词">
-        <a-input
-          v-model:value="searchParams.searchText"
-          placeholder="从名称和简介搜索"
-          allow-clear
-        />
-      </a-form-item>
-      <a-form-item label="类型">
-        <a-input v-model:value="searchParams.category" placeholder="请输入类型" allow-clear />
-      </a-form-item>
-      <a-form-item label="标签">
-        <a-select
-          v-model:value="searchParams.tags"
-          mode="tags"
-          placeholder="请输入标签"
-          style="min-width: 180px"
-          allow-clear
-        />
+        <a-input v-model:value="searchParams.spaceName" placeholder="请输入空间名称" allow-clear />
       </a-form-item>
       <a-form-item name="reviewStatus" label="审核状态">
         <a-select
-          v-model:value="searchParams.reviewStatus"
-          placeholder="请选择审核状态"
-          :options="PIC_REVIEW_STATUS_OPTIONS"
+          v-model:value="searchParams.spaceLevel"
+          placeholder="请选择空间等级"
+          :options="SPACE_LEVEL_OPTIONS"
           allow-clear
         />
+      </a-form-item>
+      <a-form-item name="userId" label="用户id">
+        <a-input v-model:value="searchParams.userId" placeholder="请输入用户id" allow-clear />
       </a-form-item>
       <a-form-item>
         <a-button type="primary" html-type="submit">查询</a-button>
@@ -62,20 +46,12 @@
             </a-tag>
           </a-space>
         </template>
-        <template v-else-if="column.dataIndex === 'picInfo'">
-          <div>格式:{{ record.picFormat }}</div>
-          <div>宽度:{{ record.picWidth }}</div>
-          <div>高度:{{ record.picHeight }}</div>
-          <div>比例:{{ record.picScale }}</div>
-          <div>大小:{{ (record.picSize / 1024).toFixed(2) }} KB</div>
+        <template v-else-if="column.dataIndex === 'spaceLevel'">
+          <div>空间等级:{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</div>
         </template>
-        <template v-else-if="column.dataIndex === 'reviewInfo'">
-          <div>审核状态:{{ PIC_REVIEW_STATUS_MAP[record.reviewStatus] }}</div>
-          <div>审核人:{{ record.reviewerId }}</div>
-          <div>审核信息:{{ record.reviewMessage }}</div>
-          <div v-if="record.reviewTime">
-            审核时间:{{ dayjs(record.reviewTime).format('YYYY-MM-DD HH:mm:ss') }}
-          </div>
+        <template v-else-if="column.dataIndex === 'spaceUseInfo'">
+          <div>大小:{{ formatSize(record.totalSize) }} / {{ formatSize(record.maxSize) }}</div>
+          <div>数量:{{ record.totalCount }} / {{ record.maxCount }}</div>
         </template>
         <template v-else-if="column.dataIndex === 'createTime'">
           {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -85,21 +61,6 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space wrap>
-            <a-button
-              type="link"
-              v-if="record.reviewStatus !== PIC_REVIEW_STATUS_ENUM.PASS"
-              @click="handleReview(record, PIC_REVIEW_STATUS_ENUM.PASS)"
-            >
-              通过
-            </a-button>
-            <a-button
-              type="link"
-              v-if="record.reviewStatus !== PIC_REVIEW_STATUS_ENUM.REJECT"
-              danger
-              @click="handleReview(record, PIC_REVIEW_STATUS_ENUM.REJECT)"
-            >
-              拒绝
-            </a-button>
             <a-button type="link" :href="`/picture/add_picture?id=${record.id}`" target="_blank">
               编辑
             </a-button>
@@ -125,45 +86,32 @@ import {
   PIC_REVIEW_STATUS_MAP,
   PIC_REVIEW_STATUS_OPTIONS,
 } from '@/constants/picture.ts'
+import { listSpaceByPageUsingPost } from '@/service/api/spaceController.ts'
+import { SPACE_LEVEL_MAP, SPACE_LEVEL_OPTIONS } from '@/constants/space.ts'
+import { formatSize } from '@/utils'
 
 const columns = [
   {
     title: 'id',
     dataIndex: 'id',
+    width: 80,
   },
   {
-    title: '账号',
-    dataIndex: 'url',
+    title: '空间名称',
+    dataIndex: 'spaceName',
   },
   {
-    title: '名称',
-    dataIndex: 'name',
+    title: '空间级别',
+    dataIndex: 'spaceLevel',
   },
   {
-    title: '简介',
-    dataIndex: 'introduction',
-    ellipsis: true,
-  },
-  {
-    title: '类型',
-    dataIndex: 'category',
-  },
-  {
-    title: '标签',
-    dataIndex: 'tags',
-  },
-  {
-    title: '图片信息',
-    dataIndex: 'picInfo',
+    title: '使用情况',
+    dataIndex: 'spaceUseInfo',
   },
   {
     title: '用户id',
     dataIndex: 'userId',
     width: 80,
-  },
-  {
-    title: '审核信息',
-    dataIndex: 'reviewInfo',
   },
   {
     title: '创建时间',
@@ -179,10 +127,10 @@ const columns = [
   },
 ]
 
-const dataList = ref<API.Picture[]>([])
+const dataList = ref<API.Space[]>([])
 const total = ref(0)
 
-const searchParams = reactive<API.PictureQueryDTO>({
+const searchParams = reactive<API.SpaceQueryDTO>({
   current: 1,
   pageSize: 10,
   sortField: 'createTime',
@@ -200,7 +148,7 @@ const pagination = computed(() => {
 })
 
 const fetchData = async () => {
-  const res = await listPictureByPageUsingPost({ ...searchParams, nullSpace: true })
+  const res = await listSpaceByPageUsingPost({ ...searchParams })
   if (res.data.code === 200 && res.data.data) {
     console.log(res.data.data)
     dataList.value = res.data.data.records ?? []
@@ -230,18 +178,6 @@ const doDelete = async (id: number) => {
     await fetchData()
   } else {
     message.error('删除失败,' + res.data.message)
-  }
-}
-
-const handleReview = async (record: API.Picture, reviewStatus: number) => {
-  const reviewMessage =
-    reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS ? '管理员审核通过' : '管理员审核拒绝'
-  const res = await reviewPictureUsingPost({ id: record.id, reviewMessage, reviewStatus })
-  if (res.data.code === 200) {
-    message.success('审核成功')
-    await fetchData()
-  } else {
-    message.error('审核失败,' + res.data.message)
   }
 }
 
