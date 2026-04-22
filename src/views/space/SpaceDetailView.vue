@@ -18,6 +18,8 @@
       </a-space>
     </a-flex>
     <div style="margin-top: 16px" />
+    <PictureSearchForm :onSearch="onSearch" />
+    <div style="margin-bottom: 16px" />
     <PictureList :showOp="true" :dataList="dataList" :loading="loading" :onReload="fetchData" />
     <a-pagination
       v-model:current="searchParams.current"
@@ -36,6 +38,7 @@ import { message } from 'ant-design-vue'
 import { listPictureVoByPageUsingPost } from '@/service/api/pictureController.ts'
 import { formatSize } from '@/utils'
 import PictureList from '@/components/PictureList.vue'
+import PictureSearchForm from '@/components/PictureSearchForm.vue'
 
 interface Props {
   id: string | number
@@ -61,23 +64,32 @@ const dataList = ref<API.PictureVO[]>([])
 const total = ref(0)
 const loading = ref(true)
 
-const searchParams = reactive<API.PictureQueryDTO>({
+const searchParams = ref<API.PictureQueryDTO>({
   current: 1,
   pageSize: 15,
   sortField: 'createTime',
   sortOrder: 'descend',
 })
 
+const onSearch = (newSearchParams: API.PictureQueryDTO) => {
+  searchParams.value = {
+    ...searchParams,
+    ...newSearchParams,
+    current: 1,
+  }
+  fetchData()
+}
+
 const onPageChange = (page: number, pageSize: number) => {
-  searchParams.current = page
-  searchParams.pageSize = pageSize
+  searchParams.value.current = page
+  searchParams.value.pageSize = pageSize
   fetchData()
 }
 
 const fetchData = async () => {
   try {
     loading.value = true
-    const params = { spaceId: props.id, ...searchParams }
+    const params = { spaceId: props.id, ...searchParams.value }
     const res = await listPictureVoByPageUsingPost(params)
     if (res.data.code === 200 && res.data.data) {
       console.log(res.data.data)
