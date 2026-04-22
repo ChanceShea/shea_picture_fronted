@@ -17,8 +17,11 @@
         </a-tooltip>
       </a-space>
     </a-flex>
-    <div style="margin-top: 16px" />
     <PictureSearchForm :onSearch="onSearch" />
+    <div style="margin-top: 16px" />
+    <a-form-item label="按颜色搜索">
+      <color-picker format="hex" @pureColorChange="onColorChange" />
+    </a-form-item>
     <div style="margin-bottom: 16px" />
     <PictureList :showOp="true" :dataList="dataList" :loading="loading" :onReload="fetchData" />
     <a-pagination
@@ -35,10 +38,15 @@
 import { onMounted, reactive, ref } from 'vue'
 import { getSpaceVoByIdUsingGet } from '@/service/api/spaceController.ts'
 import { message } from 'ant-design-vue'
-import { listPictureVoByPageUsingPost } from '@/service/api/pictureController.ts'
+import {
+  listPictureVoByPageUsingPost,
+  searchPictureByColorUsingPost,
+} from '@/service/api/pictureController.ts'
 import { formatSize } from '@/utils'
 import PictureList from '@/components/PictureList.vue'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
+import { ColorPicker } from 'vue3-colorpicker'
+import 'vue3-colorpicker/style.css'
 
 interface Props {
   id: string | number
@@ -98,6 +106,27 @@ const fetchData = async () => {
     } else {
       message.error('获取数据失败,' + res.data.message)
     }
+  } finally {
+    loading.value = false
+  }
+}
+
+const onColorChange = async (color: string) => {
+  try {
+    loading.value = true
+    const res = await searchPictureByColorUsingPost({
+      picColor: color,
+      spaceId: props.id,
+    })
+    if (res.data.code === 200 && res.data.data) {
+      const data = res.data.data ?? []
+      dataList.value = data
+      total.value = data.length
+    } else {
+      message.error('按颜色搜索失败,' + res.data.message)
+    }
+  } catch (error: any) {
+    message.error('按颜色搜索失败,' + error.message)
   } finally {
     loading.value = false
   }

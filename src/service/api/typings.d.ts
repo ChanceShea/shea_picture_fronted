@@ -88,6 +88,7 @@ declare namespace API {
     introduction?: string
     isDelete?: number
     name?: string
+    picColor?: string
     picFormat?: string
     picHeight?: number
     picScale?: number
@@ -179,6 +180,7 @@ declare namespace API {
     id?: number
     introduction?: string
     name?: string
+    picColor?: string
     picFormat?: string
     picHeight?: number
     picScale?: number
@@ -208,6 +210,12 @@ declare namespace API {
   type ResultListImageSearchResult_ = {
     code?: number
     data?: ImageSearchResult[]
+    message?: string
+  }
+
+  type ResultListPictureVO_ = {
+    code?: number
+    data?: PictureVO[]
     message?: string
   }
 
@@ -293,6 +301,11 @@ declare namespace API {
     code?: number
     data?: UserVO
     message?: string
+  }
+
+  type SearchPictureByColorDTO = {
+    picColor?: string
+    spaceId?: number
   }
 
   type SearchPictureByPictureDTO = {

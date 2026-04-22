@@ -41,6 +41,19 @@
             <a-descriptions-item label="大小">
               {{ formatSize(picture.picSize) }}
             </a-descriptions-item>
+            <a-descriptions-item label="主色调">
+              <a-space>
+                {{ picture.picColor ?? '-' }}
+                <div
+                  v-if="picture.picColor"
+                  :style="{
+                    backgroundColor: toHexColor(picture.picColor),
+                    width: '16px',
+                    height: '16px',
+                  }"
+                />
+              </a-space>
+            </a-descriptions-item>
           </a-descriptions>
           <a-space wrap>
             <a-button type="primary" @click="doDownload">
@@ -77,7 +90,7 @@ import {
 } from '@/service/api/pictureController.ts'
 import { message } from 'ant-design-vue'
 import { EditOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons-vue'
-import { downloadImage, formatSize } from '@/utils'
+import { downloadImage, formatSize, toHexColor } from '@/utils'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { useRouter } from 'vue-router'
 
@@ -90,6 +103,7 @@ const picture = ref<API.PictureVO>({})
 const fetchPictureDetail = async () => {
   try {
     const res = await getPictureVoByIdUsingGet({ id: props.id })
+    console.log('picture:', res)
     if (res.data.code === 200 && res.data.data) {
       picture.value = res.data.data
     } else {
