@@ -6,6 +6,7 @@
         <a-button type="primary" :href="`/picture/add_picture?spaceId=${id}`" target="_blank"
           >创建图片</a-button
         >
+        <a-button :icon="h(EditOutlined)" @click="doBatchEdit"> 批量编辑 </a-button>
         <a-tooltip
           :title="`占用空间 ${formatSize(space.totalSize)} / ${formatSize(space.maxSize)}`"
         >
@@ -31,11 +32,17 @@
       :total="total"
       style="text-align: center"
     />
+    <BatchEditPictureModal
+      ref="batchEditPictureModal"
+      :spaceId="id"
+      :pictures="dataList"
+      :onSuccess="onBatchEditPictureSuccess"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { h, onMounted, reactive, ref } from 'vue'
 import { getSpaceVoByIdUsingGet } from '@/service/api/spaceController.ts'
 import { message } from 'ant-design-vue'
 import {
@@ -47,6 +54,8 @@ import PictureList from '@/components/PictureList.vue'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import { ColorPicker } from 'vue3-colorpicker'
 import 'vue3-colorpicker/style.css'
+import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
+import { EditOutlined } from '@ant-design/icons-vue'
 
 interface Props {
   id: string | number
@@ -81,7 +90,7 @@ const searchParams = ref<API.PictureQueryDTO>({
 
 const onSearch = (newSearchParams: API.PictureQueryDTO) => {
   searchParams.value = {
-    ...searchParams,
+    ...searchParams.value,
     ...newSearchParams,
     current: 1,
   }
@@ -129,6 +138,18 @@ const onColorChange = async (color: string) => {
     message.error('按颜色搜索失败,' + error.message)
   } finally {
     loading.value = false
+  }
+}
+
+const batchEditPictureModal = ref()
+
+const onBatchEditPictureSuccess = () => {
+  fetchData()
+}
+
+const doBatchEdit = () => {
+  if (batchEditPictureModal.value) {
+    batchEditPictureModal.value.openModal()
   }
 }
 

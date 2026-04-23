@@ -32,6 +32,21 @@ export async function editPictureUsingPost(
   })
 }
 
+/** editPictureByBatch POST /api/picture/edit/batch */
+export async function editPictureByBatchUsingPost(
+  body: API.PictureEditBatchDTO,
+  options?: { [key: string]: any }
+) {
+  return request<API.ResultBoolean_>('/api/picture/edit/batch', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** getPictureVOById GET /api/picture/get/vo */
 export async function getPictureVoByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)

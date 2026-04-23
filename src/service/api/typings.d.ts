@@ -106,6 +106,14 @@ declare namespace API {
     userId?: number
   }
 
+  type PictureEditBatchDTO = {
+    category?: string
+    nameRule?: string
+    pictureIds?: number[]
+    spaceId?: number
+    tags?: string[]
+  }
+
   type PictureEditDTO = {
     category?: string
     id?: number
