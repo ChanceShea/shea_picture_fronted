@@ -12,8 +12,19 @@
         <UrlPictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
+    <!--    图片编辑区域-->
+    <div v-if="picture" class="edit-bar">
+      <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+    </div>
+    <ImageCropper
+      ref="imageCropperRef"
+      :spaceId="spaceId"
+      :imageUrl="picture?.url"
+      :picture="picture"
+      :onSuccess="onCropSuccess"
+    />
     <a-form
-      v-if="pictureForm"
+      v-if="picture"
       name="pictureForm"
       layout="vertical"
       :model="pictureForm"
@@ -58,7 +69,7 @@
 
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, h, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import {
   editPictureUsingPost,
@@ -67,6 +78,8 @@ import {
 } from '@/service/api/pictureController.ts'
 import { useRoute, useRouter } from 'vue-router'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
+import ImageCropper from '@/components/ImageCropper.vue'
+import { EditOutlined } from '@ant-design/icons-vue'
 
 const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditDTO>({
@@ -107,7 +120,9 @@ const handleSubmit = async (values: any) => {
     })
     if (res.data.code === 200 && res.data.data) {
       message.success('创建成功')
-      router.push(`/picture/${pictureId}`)
+      router.push({
+        path: `/picture/${pictureId}`,
+      })
     } else {
       message.error('创建失败,' + res.data.message)
     }
@@ -167,11 +182,26 @@ const getOldPicture = async () => {
     }
   }
 }
+
+const imageCropperRef = ref()
+
+const doEditPicture = () => {
+  imageCropperRef.value?.openModal()
+}
+
+const onCropSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
 </script>
 
 <style scoped>
 #addPictureView {
   max-width: 720px;
   margin: 0 auto;
+}
+
+#addPictureView .edit-bar {
+  text-align: right;
+  margin: 16px 0;
 }
 </style>

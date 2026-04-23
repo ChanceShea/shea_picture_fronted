@@ -32,7 +32,8 @@ const props = defineProps<Props>()
 const loading = ref(false)
 
 const beforeUpload = (file: UploadProps['fileList'][number]) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+  const isJpgOrPng =
+    file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp'
   const isLt2M = file.size / 1024 / 1024 < 2
 
   if (!isJpgOrPng) {

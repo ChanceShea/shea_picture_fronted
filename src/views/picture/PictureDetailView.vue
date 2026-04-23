@@ -69,7 +69,6 @@
               v-if="canEdit"
               :icon="h(EditOutlined)"
               type="default"
-              :href="`/picture/add_picture/${picture.id}`"
               target="_blank"
               @click="doEdit"
             >
