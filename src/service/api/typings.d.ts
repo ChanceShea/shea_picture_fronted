@@ -1,6 +1,36 @@
 declare namespace API {
+  type CreateOutPaintingVO = {
+    code?: string
+    message?: string
+    output?: Output
+    requestId?: string
+  }
+
+  type CreatePictureOutPaintingDTO = {
+    parameters?: Parameters
+    pictureId?: number
+  }
+
   type DeleteRequest = {
     id?: number
+  }
+
+  type GetOutPaintingVO = {
+    code?: string
+    end_time?: string
+    message?: string
+    output_image_url?: string
+    request_id?: string
+    submit_time?: string
+    task_id?: string
+    task_metrics?: TaskMetrics
+    task_status?: string
+    usage?: Usage
+  }
+
+  type getPictureOutPaintingTaskUsingGETParams = {
+    /** taskId */
+    taskId?: string
   }
 
   type getPictureVOByIdUsingGETParams = {
@@ -40,6 +70,8 @@ declare namespace API {
     userRole?: string
   }
 
+  type Output = true
+
   type PagePicture_ = {
     current?: number
     pages?: number
@@ -78,6 +110,20 @@ declare namespace API {
     records?: UserVO[]
     size?: number
     total?: number
+  }
+
+  type Parameters = {
+    addWatermark?: boolean
+    angle?: number
+    bestQuality?: boolean
+    bottomOffset?: number
+    leftOffset?: number
+    limitImageSize?: boolean
+    outputRatio?: string
+    rightOffset?: number
+    topOffset?: number
+    xScale?: number
+    yScale?: number
   }
 
   type Picture = {
@@ -206,6 +252,18 @@ declare namespace API {
   type ResultBoolean_ = {
     code?: number
     data?: boolean
+    message?: string
+  }
+
+  type ResultCreateOutPaintingVO_ = {
+    code?: number
+    data?: CreateOutPaintingVO
+    message?: string
+  }
+
+  type ResultGetOutPaintingVO_ = {
+    code?: number
+    data?: GetOutPaintingVO
     message?: string
   }
 
@@ -386,11 +444,21 @@ declare namespace API {
     userId?: number
   }
 
+  type TaskMetrics = {
+    FAILED?: number
+    SUCCEEDED?: number
+    TOTAL?: number
+  }
+
   type uploadPictureUsingPOSTParams = {
     id?: number
     picName?: string
     spaceId?: number
     url?: string
+  }
+
+  type Usage = {
+    image_count?: number
   }
 
   type User = {

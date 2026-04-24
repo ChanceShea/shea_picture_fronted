@@ -14,15 +14,25 @@
     </a-tabs>
     <!--    图片编辑区域-->
     <div v-if="picture" class="edit-bar">
-      <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+      <a-space size="middle">
+        <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+        <a-button :icon="h(FullscreenOutlined)" @click="doImagePainting">AI扩图</a-button>
+      </a-space>
+      <ImageCropper
+        ref="imageCropperRef"
+        :spaceId="spaceId"
+        :imageUrl="picture?.url"
+        :picture="picture"
+        :onSuccess="onCropSuccess"
+      />
+      <ImageOutPainting
+        ref="imageOutPaintingRef"
+        :picture="picture"
+        :spaceId="spaceId"
+        :onSuccess="onImageOutPaintingSuccess"
+      />
     </div>
-    <ImageCropper
-      ref="imageCropperRef"
-      :spaceId="spaceId"
-      :imageUrl="picture?.url"
-      :picture="picture"
-      :onSuccess="onCropSuccess"
-    />
+
     <a-form
       v-if="picture"
       name="pictureForm"
@@ -78,8 +88,8 @@ import {
 } from '@/service/api/pictureController.ts'
 import { useRoute, useRouter } from 'vue-router'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
-import ImageCropper from '@/components/ImageCropper.vue'
-import { EditOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
+import ImageOutPainting from '@/components/ImageOutPainting.vue'
 
 const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditDTO>({
@@ -190,6 +200,16 @@ const doEditPicture = () => {
 }
 
 const onCropSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
+
+const imageOutPaintingRef = ref()
+
+const doImagePainting = () => {
+  imageOutPaintingRef.value?.openModal()
+}
+
+const onImageOutPaintingSuccess = (newPicture: API.PictureVO) => {
   picture.value = newPicture
 }
 </script>
