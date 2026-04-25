@@ -16,15 +16,8 @@ declare namespace API {
   }
 
   type GetOutPaintingVO = {
-    code?: string
-    end_time?: string
-    message?: string
-    output_image_url?: string
+    output?: Output1
     request_id?: string
-    submit_time?: string
-    task_id?: string
-    task_metrics?: TaskMetrics
-    task_status?: string
     usage?: Usage
   }
 
@@ -70,7 +63,22 @@ declare namespace API {
     userRole?: string
   }
 
-  type Output = true
+  type Output = {
+    taskId?: string
+    taskStatus?: string
+  }
+
+  type Output1 = {
+    code?: string
+    end_time?: string
+    message?: string
+    output_image_url?: string
+    scheduled_time?: string
+    submit_time?: string
+    task_id?: string
+    task_metrics?: TaskMetrics
+    task_status?: string
+  }
 
   type PagePicture_ = {
     current?: number
@@ -285,9 +293,39 @@ declare namespace API {
     message?: string
   }
 
+  type ResultListSpace_ = {
+    code?: number
+    data?: Space[]
+    message?: string
+  }
+
+  type ResultListSpaceCategoryAnalyzeVO_ = {
+    code?: number
+    data?: SpaceCategoryAnalyzeVO[]
+    message?: string
+  }
+
   type ResultListSpaceLevel_ = {
     code?: number
     data?: SpaceLevel[]
+    message?: string
+  }
+
+  type ResultListSpaceSizeAnalyzeVO_ = {
+    code?: number
+    data?: SpaceSizeAnalyzeVO[]
+    message?: string
+  }
+
+  type ResultListSpaceTagAnalyzeVO_ = {
+    code?: number
+    data?: SpaceTagAnalyzeVO[]
+    message?: string
+  }
+
+  type ResultListSpaceUserAnalyzeVO_ = {
+    code?: number
+    data?: SpaceUserAnalyzeVO[]
     message?: string
   }
 
@@ -345,6 +383,12 @@ declare namespace API {
     message?: string
   }
 
+  type ResultSpaceUsageAnalyzeVO_ = {
+    code?: number
+    data?: SpaceUsageAnalyzeVO
+    message?: string
+  }
+
   type ResultSpaceVO_ = {
     code?: number
     data?: SpaceVO
@@ -398,6 +442,18 @@ declare namespace API {
     spaceName?: string
   }
 
+  type SpaceCategoryAnalyzeDTO = {
+    queryAll?: boolean
+    queryPublic?: boolean
+    spaceId?: number
+  }
+
+  type SpaceCategoryAnalyzeVO = {
+    category?: string
+    count?: number
+    totalSize?: number
+  }
+
   type SpaceEditDTO = {
     id?: number
     spaceName?: string
@@ -421,12 +477,66 @@ declare namespace API {
     userId?: number
   }
 
+  type SpaceRankAnalyzeDTO = {
+    topN?: number
+  }
+
+  type SpaceSizeAnalyzeDTO = {
+    queryAll?: boolean
+    queryPublic?: boolean
+    spaceId?: number
+  }
+
+  type SpaceSizeAnalyzeVO = {
+    count?: number
+    sizeRange?: string
+  }
+
+  type SpaceTagAnalyzeDTO = {
+    queryAll?: boolean
+    queryPublic?: boolean
+    spaceId?: number
+  }
+
+  type SpaceTagAnalyzeVO = {
+    count?: number
+    tag?: string
+  }
+
   type SpaceUpdateDTO = {
     id?: number
     maxCount?: number
     maxSize?: number
     spaceLevel?: number
     spaceName?: string
+  }
+
+  type SpaceUsageAnalyzeDTO = {
+    queryAll?: boolean
+    queryPublic?: boolean
+    spaceId?: number
+  }
+
+  type SpaceUsageAnalyzeVO = {
+    countUsageRatio?: number
+    maxCount?: number
+    maxSize?: number
+    sizeUsageRatio?: number
+    usedCount?: number
+    usedSize?: number
+  }
+
+  type SpaceUserAnalyzeDTO = {
+    queryAll?: boolean
+    queryPublic?: boolean
+    spaceId?: number
+    timeDimension?: string
+    userId?: number
+  }
+
+  type SpaceUserAnalyzeVO = {
+    count?: number
+    period?: string
   }
 
   type SpaceVO = {
@@ -445,9 +555,9 @@ declare namespace API {
   }
 
   type TaskMetrics = {
-    FAILED?: number
-    SUCCEEDED?: number
-    TOTAL?: number
+    failed?: number
+    succeeded?: number
+    total?: number
   }
 
   type uploadPictureUsingPOSTParams = {
