@@ -18,11 +18,20 @@
       <a-form-item label="关键词">
         <a-input v-model:value="searchParams.spaceName" placeholder="请输入空间名称" allow-clear />
       </a-form-item>
-      <a-form-item name="reviewStatus" label="审核状态">
+      <a-form-item name="spaceLevel" label="空间等级">
         <a-select
           v-model:value="searchParams.spaceLevel"
           placeholder="请选择空间等级"
           :options="SPACE_LEVEL_OPTIONS"
+          allow-clear
+        />
+      </a-form-item>
+      <a-form-item name="spaceType" label="空间类别">
+        <a-select
+          v-model:value="searchParams.spaceType"
+          placeholder="请选择空间类别"
+          :options="SPACE_TYPE_OPTIONS"
+          :style="{ minWidth: '180px' }"
           allow-clear
         />
       </a-form-item>
@@ -53,7 +62,10 @@
           </a-space>
         </template>
         <template v-else-if="column.dataIndex === 'spaceLevel'">
-          <div>空间等级:{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</div>
+          <div>{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</div>
+        </template>
+        <template v-else-if="column.dataIndex === 'spaceType'">
+          <div>{{ SPACE_TYPE_MAP[record.spaceType] }}</div>
         </template>
         <template v-else-if="column.dataIndex === 'spaceUseInfo'">
           <div>大小:{{ formatSize(record.totalSize) }} / {{ formatSize(record.maxSize) }}</div>
@@ -96,7 +108,12 @@ import {
   PIC_REVIEW_STATUS_OPTIONS,
 } from '@/constants/picture.ts'
 import { listSpaceByPageUsingPost } from '@/service/api/spaceController.ts'
-import { SPACE_LEVEL_MAP, SPACE_LEVEL_OPTIONS } from '@/constants/space.ts'
+import {
+  SPACE_LEVEL_MAP,
+  SPACE_LEVEL_OPTIONS,
+  SPACE_TYPE_MAP,
+  SPACE_TYPE_OPTIONS,
+} from '@/constants/space.ts'
 import { formatSize } from '@/utils'
 
 const columns = [
@@ -112,6 +129,10 @@ const columns = [
   {
     title: '空间级别',
     dataIndex: 'spaceLevel',
+  },
+  {
+    title: '空间类别',
+    dataIndex: 'spaceType',
   },
   {
     title: '使用情况',

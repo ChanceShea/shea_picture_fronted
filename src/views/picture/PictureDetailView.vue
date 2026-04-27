@@ -74,7 +74,7 @@
             >
               编辑
             </a-button>
-            <a-button v-if="canEdit" :icon="h(DeleteOutlined)" danger @click="doDelete"
+            <a-button v-if="canDelete" :icon="h(DeleteOutlined)" danger @click="doDelete"
               >删除</a-button
             >
           </a-space>
@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, h, onMounted, ref } from 'vue'
+import { h, onMounted, ref } from 'vue'
 import {
   getPictureVoByIdUsingGet,
   removePictureByIdUsingDelete,
@@ -102,6 +102,7 @@ import { downloadImage, formatSize, toHexColor } from '@/utils'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { useRouter } from 'vue-router'
 import ShareModal from '@/components/ShareModal.vue'
+import { SPACE_PERMISSION_ENUM } from '@/constants/space.ts'
 
 interface Props {
   id: string | number
@@ -125,14 +126,12 @@ const fetchPictureDetail = async () => {
 
 const loginUserStore = useLoginUserStore()
 
-const canEdit = computed(() => {
-  const loginUser = loginUserStore.loginUser
-  if (!loginUser.id) {
-    return false
-  }
-  const user = picture.value.user || {}
-  return loginUser.id === user.id || loginUser.userRole === 'admin'
-})
+const createPermissionChecker = (permission: string) => {
+  return (picture.value.permissions ?? []).includes(permission)
+}
+
+const canEdit = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_EDIT)
+const canDelete = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_DELETE)
 
 const router = useRouter()
 

@@ -1,12 +1,28 @@
 <template>
   <div id="spaceDetailView">
     <a-flex justify="space-between">
-      <h2 style="margin-top: 10px">{{ space.spaceName }}（私有空间）</h2>
+      <h2 style="margin-top: 10px">
+        {{ space.spaceName }}（{{ SPACE_TYPE_MAP[space.spaceType] }}）
+      </h2>
       <a-space size="middle">
-        <a-button type="primary" :href="`/picture/add_picture?spaceId=${id}`" target="_blank"
+        <a-button
+          v-if="canUpload"
+          type="primary"
+          :href="`/picture/add_picture?spaceId=${id}`"
+          target="_blank"
           >创建图片</a-button
         >
         <a-button
+          v-if="canManageSpaceUser"
+          type="primary"
+          ghost
+          :icon="h(TeamOutlined)"
+          :href="`/spaceUserManage/${id}`"
+        >
+          成员管理
+        </a-button>
+        <a-button
+          v-if="canManageSpaceUser"
           type="primary"
           ghost
           :icon="h(BarChartOutlined)"
@@ -14,7 +30,7 @@
         >
           空间分析
         </a-button>
-        <a-button :icon="h(EditOutlined)" @click="doBatchEdit"> 批量编辑 </a-button>
+        <a-button v-if="canEdit" :icon="h(EditOutlined)" @click="doBatchEdit"> 批量编辑 </a-button>
 
         <a-tooltip
           :title="`占用空间 ${formatSize(space.totalSize)} / ${formatSize(space.maxSize)}`"
@@ -33,7 +49,14 @@
       <color-picker format="hex" @pureColorChange="onColorChange" />
     </a-form-item>
     <div style="margin-bottom: 16px" />
-    <PictureList :showOp="true" :dataList="dataList" :loading="loading" :onReload="fetchData" />
+    <PictureList
+      :canEdit="canEdit"
+      :canDelete="canDelete"
+      :showOp="true"
+      :dataList="dataList"
+      :loading="loading"
+      :onReload="fetchData"
+    />
     <a-pagination
       v-model:current="searchParams.current"
       v-model:pageSize="searchParams.pageSize"
@@ -51,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, onMounted, reactive, ref } from 'vue'
+import { computed, h, onMounted, reactive, ref, watch, watchEffect } from 'vue'
 import { getSpaceVoByIdUsingGet } from '@/service/api/spaceController.ts'
 import { message } from 'ant-design-vue'
 import {
@@ -64,7 +87,8 @@ import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import { ColorPicker } from 'vue3-colorpicker'
 import 'vue3-colorpicker/style.css'
 import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
-import { EditOutlined, BarChartOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, BarChartOutlined, TeamOutlined } from '@ant-design/icons-vue'
+import { SPACE_PERMISSION_ENUM, SPACE_TYPE_ENUM, SPACE_TYPE_MAP } from '@/constants/space.ts'
 
 interface Props {
   id: string | number
@@ -75,9 +99,9 @@ const space = ref<API.SpaceVO>({})
 const fetchSpaceDetail = async () => {
   try {
     const res = await getSpaceVoByIdUsingGet({ id: String(props.id) })
-    console.log(res)
     if (res.data.code === 200 && res.data.data) {
       space.value = res.data.data
+      console.log('space', space.value)
     } else {
       message.error(res.data.message)
     }
@@ -156,11 +180,32 @@ const onBatchEditPictureSuccess = () => {
   fetchData()
 }
 
+watch(
+  () => props.id,
+  () => {
+    fetchData()
+    fetchSpaceDetail()
+  },
+)
+
 const doBatchEdit = () => {
   if (batchEditPictureModal.value) {
     batchEditPictureModal.value.openModal()
   }
 }
+
+const createPermissionChecker = (permission: string) => {
+  console.log('permission', permission)
+  console.log('space.value.permissions', space.value.permissions)
+  return (space.value.permissions ?? []).includes(permission)
+}
+
+const canManageSpaceUser = computed(() =>
+  createPermissionChecker(SPACE_PERMISSION_ENUM.SPACE_USER_MANAGER),
+)
+const canEdit = computed(() => createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_EDIT))
+const canDelete = computed(() => createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_DELETE))
+const canUpload = computed(() => createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_UPLOAD))
 
 onMounted(() => {
   fetchData()

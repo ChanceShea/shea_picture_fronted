@@ -76,6 +76,12 @@ const router = createRouter({
       component: () => import('@/views/space/SpaceAnalyzeView.vue'),
     },
     {
+      path: '/spaceUserManage/:id',
+      name: '空间用户管理',
+      component: () => import('@/views/admin/SpaceUserManageView.vue'),
+      props: true,
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('@/views/AboutView.vue'),

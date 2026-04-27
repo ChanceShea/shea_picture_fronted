@@ -90,6 +90,7 @@ import { useRoute, useRouter } from 'vue-router'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 import { EditOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import ImageOutPainting from '@/components/ImageOutPainting.vue'
+import ImageCropper from '@/components/ImageCropper.vue'
 
 const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditDTO>({
@@ -180,8 +181,9 @@ onMounted(() => {
 
 const getOldPicture = async () => {
   const id = route.query?.id
+  console.log('pictureId', id)
   if (id) {
-    const res = await getPictureVoByIdUsingGet({ id: Number(id) })
+    const res = await getPictureVoByIdUsingGet({ id })
     if (res.data.code === 200 && res.data.data) {
       const data = res.data.data
       picture.value = data
