@@ -21,6 +21,7 @@
       <ImageCropper
         ref="imageCropperRef"
         :spaceId="spaceId"
+        :space="space"
         :imageUrl="picture?.url"
         :picture="picture"
         :onSuccess="onCropSuccess"
@@ -79,7 +80,7 @@
 
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
-import { computed, h, onMounted, reactive, ref } from 'vue'
+import { computed, h, onMounted, reactive, ref, watchEffect } from 'vue'
 import { message } from 'ant-design-vue'
 import {
   editPictureUsingPost,
@@ -91,6 +92,7 @@ import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 import { EditOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import ImageOutPainting from '@/components/ImageOutPainting.vue'
 import ImageCropper from '@/components/ImageCropper.vue'
+import { getSpaceVoByIdUsingGet } from '@/service/api/spaceController.ts'
 
 const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditDTO>({
@@ -214,6 +216,21 @@ const doImagePainting = () => {
 const onImageOutPaintingSuccess = (newPicture: API.PictureVO) => {
   picture.value = newPicture
 }
+
+const space = ref<API.SpaceVO>()
+
+const getOldSpace = async () => {
+  if (!space.value) {
+    const res = await getSpaceVoByIdUsingGet({ id: spaceId.value })
+    if (res.data.code === 200 && res.data.data) {
+      space.value = res.data.data
+    }
+  }
+}
+
+watchEffect(() => {
+  getOldSpace()
+})
 </script>
 
 <style scoped>

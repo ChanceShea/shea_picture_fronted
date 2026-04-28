@@ -23,7 +23,7 @@ import { type MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { SPACE_TYPE_ENUM } from '@/constants/space.ts'
-import { listMySpaceUserUsingPost } from '@/service/api/spaceUserController.ts'
+import { listSpaceUserUsingPost } from '@/service/api/spaceUserController.ts'
 
 const loginUserStore = useLoginUserStore()
 
@@ -71,7 +71,7 @@ const menuItems = computed(() => {
 })
 
 const getTeamSpaceList = async () => {
-  const res = await listMySpaceUserUsingPost()
+  const res = await listSpaceUserUsingPost({ userId: loginUserStore.loginUser.id })
   if (res.data.code === 200 && res.data.data) {
     teamSpaceList.value = res.data.data
   } else {

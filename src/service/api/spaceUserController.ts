@@ -77,8 +77,8 @@ export async function listSpaceUserUsingPost(
   })
 }
 
-/** listMySpaceUser POST /api/spaceUser/list/my */
-export async function listMySpaceUserUsingPost(options?: { [key: string]: any }) {
+/** listMyTeamSpace POST /api/spaceUser/list/my */
+export async function listMyTeamSpaceUsingPost(options?: { [key: string]: any }) {
   return request<API.ResultListSpaceUserVO_>('/api/spaceUser/list/my', {
     method: 'POST',
     ...(options || {}),
